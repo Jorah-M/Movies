@@ -7,6 +7,7 @@ import { textColors, backgroundColors, lineColor } from '../../constants/default
 import MovieRow from './MovieRow';
 import sadPepe from './sadPepe.png';
 import Button from "../Buttons/Button";
+import {MOVIE_COMMENTS_MODAL} from "../../constants/modals";
 
 const TableContainer = styled.div`
   box-shadow: rgb(226 226 226) 0 0.142rem 0.571rem;
@@ -88,8 +89,7 @@ const TableSort = styled.div`
     cursor: pointer;
     word-wrap: break-word;
     transform: rotateZ(0);
-    width: 100%;
-    max-width: 15em;
+    width: 15em;
     min-height: 2.71428571em;
     padding: 0.71571429em 2.5em 0.71571429em 1em;
     box-shadow: none;
@@ -298,6 +298,7 @@ const MoviesTable = () => {
           />
         ))}
       </TableBody>
+      <div style={{ zIndex: '1' }} id={MOVIE_COMMENTS_MODAL} />
     </TableContainer>
   );
 };

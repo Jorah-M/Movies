@@ -1,12 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import ReactDOM from 'react-dom';
 import styled from 'styled-components';
 import { textColors, backgroundColors, lineColor } from '../../constants/defaultStyles';
+import {MOVIE_COMMENTS_MODAL} from "../../constants/modals";
+import ModalComments from "../Modal/ModalComments";
 
 const MovieContainer = styled.div`
+  cursor: pointer;
   font-weight: 500;
   display: flex;
   text-align: left;
   border-bottom: 1px solid ${lineColor};
+  transition: background-color 50ms ease-in-out 0s, box-shadow 50ms ease-in-out 0s;
+  &:nth-child(odd):hover {
+    box-shadow: rgb(226 226 226) 0 2px 15px 0;
+    z-index: 2;
+  }
+  &:nth-child(even):hover {
+    box-shadow: rgb(220 220 220) 0 2px 15px 0;
+    z-index: 2;
+  }
+  
   > div {
     width: 11.75%;
     padding: 1.5em 0 1.5em 1.5em;
@@ -22,37 +36,67 @@ const MovieContainer = styled.div`
 `;
 
 const MovieRow = ({ movieData }) => {
-  // console.log(movieData)
-  // actors: (4) ['David Oyelowo', 'Carmen Ejogo', 'Tim Roth', 'Lorraine Toussaint']
-  // description: "A chronicle of Martin Luther King's campaign to secure equal voting rights via an epic march from Selma to Montgomery, Alabama in 1965."
-  // director: "Ava DuVernay"
-  // genre: (3) ['Biography', 'Drama', 'History']
-  // metascore: ""
-  // rank: "990"
-  // rating: "7.5"
-  // revenue: "52.07"
-  // runtime: "128"
-  // title: "Selma"
-  // votes: "67637"
-  // year: "2014"
   const {
     rating, revenue, runtime, title, genre, year,
   } = movieData;
+
+  const [isShowModal, setShowModal] = useState(false);
+  const modalRef = React.createRef();
+
+  const onClickMovie = () => {
+    setShowModal(true);
+  };
+
+  const onCloseModal = () => {
+    setShowModal(false);
+  }
 
   const toHoursAndMinutes = (totalMinutes) => {
     const minutes = totalMinutes % 60;
     const hours = Math.floor(totalMinutes / 60);
     return `${hours.toString()}h ${minutes.toString()}m`;
+  };
+
+  const getEventType = () => 'ontouchstart' in window ? 'touchstart' : 'click';
+
+  const handleOutsideClick = (e) => {
+    if (modalRef.current.contains(e.target) && e.target.id !== 'arrowBack') {
+      return;
+    }
+    onCloseModal();
   }
 
+  useEffect(() => {
+    if (isShowModal) {
+      document.addEventListener(getEventType(), handleOutsideClick, false);
+      return () => {
+        document.removeEventListener(getEventType(), handleOutsideClick, false);
+      }
+    }
+  }, [handleOutsideClick, isShowModal]);
+
+  const modalElement = (
+    <>
+      { isShowModal && (
+        <ModalComments data={movieData} onClose={onCloseModal} ref={modalRef}/>
+      )}
+    </>
+  );
+
+  const portalDOMElement = document.getElementById(MOVIE_COMMENTS_MODAL);
+  const portalElement = ReactDOM.createPortal(modalElement, portalDOMElement);
+
   return (
-    <MovieContainer>
+    <MovieContainer
+      onClick={onClickMovie}
+    >
       <div>{title}</div>
       <div>{year}</div>
       <div>{toHoursAndMinutes(runtime)}</div>
       <div>{`$${revenue} M`}</div>
       <div>{rating}</div>
       <div>{genre.join(', ')}</div>
+      {portalElement}
     </MovieContainer>
   )
 }
