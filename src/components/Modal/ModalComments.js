@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import styled from 'styled-components';
 import { textColors, backgroundColors, shadowColorDark, lineColor } from '../../constants/defaultStyles';
 import arrow from '../../assets/icons/arrow.svg';
+import firebase from '../../utils/firebase';
 
 const Container = styled.div`
   text-align: left;
@@ -93,7 +94,28 @@ const Footer = styled.div`
 `;
 
 const ModalComments = React.forwardRef(({ data, onClose }, ref) => {
+  const [movies, setMovies] = useState([]);
+  const [loading, setLoading] = useState(false);
   const { title } = data;
+  const firebaseRef = firebase.firestore().collection("movies");
+  console.log('movies', movies);
+
+  const getMovies = () => {
+    setLoading(true);
+    firebaseRef.onSnapshot((querySnapshot) => {
+      const items = [];
+      querySnapshot.forEach((doc) => {
+        items.push(doc.data());
+      })
+      console.log('items', items)
+      setMovies(items);
+      setLoading(false);
+    })
+  }
+
+  useEffect(() => {
+    getMovies();
+  }, []);
 
   return (
     <Container>
@@ -110,7 +132,11 @@ const ModalComments = React.forwardRef(({ data, onClose }, ref) => {
           </div>
         </Header>
         <Body>
-
+          {loading && (
+            <div>Loading comments...</div>
+          )}
+          {!loading && movies.map((movie) => <div>{movie.title}</div>)}
+          )}
         </Body>
         <Footer>
           <input />
