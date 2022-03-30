@@ -11,6 +11,7 @@ module.exports = {
     white: '#FFF',
     lightGray: '#F7F6F7',
     blue: '#4050b6',
+    modalBlackout: 'rgba(0,0,0,0.8)',
   },
   lineColor,
   borderColor: '#EEEEEE',

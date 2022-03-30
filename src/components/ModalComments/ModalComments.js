@@ -9,7 +9,7 @@ import Comment from "./Comment";
 
 const Container = styled.div`
   text-align: left;
-  background: rgba(0,0,0,0.8);
+  background: ${backgroundColors.modalBlackout};
   top: 0;
   left: 0;
   z-index: 1000;
@@ -21,11 +21,11 @@ const Container = styled.div`
 
 const Content = styled.div`
   position: absolute;
-  top: 80px;
+  top: 3%;
   left: 50%;
-  width: 700px;
-  margin-left: -330px;
-  background: #fff;
+  width: 70%;
+  margin-left: -35%;
+  background: ${backgroundColors.white};
   box-sizing: border-box;
   border-radius: 0.5rem;
   margin-bottom: 3em;
@@ -61,7 +61,7 @@ const Header = styled.div`
 const Body = styled.div`
   display: flex;
   flex-direction: column;
-  height: 600px;
+  height: 70vh;
   background-color: ${backgroundColors.lightGray};
   overflow: scroll;
 `;
@@ -70,6 +70,7 @@ const Footer = styled.div`
   display: flex;
   border-bottom-left-radius: 0.5em;
   border-bottom-right-radius: 0.5em;
+  background: ${backgroundColors.white};
   > input {
     border: 1px solid ${lineColor};
     border-right: none;
@@ -139,7 +140,6 @@ const EmptyOrError = styled.div`
   user-select: none;
 `;
 
-// TODO выравнять модалку по центру при смене разрешения
 const ModalComments = React.forwardRef(({ data, onClose }, ref) => {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -169,6 +169,7 @@ const ModalComments = React.forwardRef(({ data, onClose }, ref) => {
    * Or we can combine id from movie data (such as title_year_rating etc.)
    */
   const addComment = () => {
+    if (!comment) return;
     const id = uuidv4();
     const objectForAdding =
       movies?.[rank]
@@ -183,7 +184,6 @@ const ModalComments = React.forwardRef(({ data, onClose }, ref) => {
 
   const dataToComments = (data) => {
     const newData = Object.values(data?.[rank]);
-    console.log([...newData]);
     return [...newData];
   }
 
@@ -198,6 +198,10 @@ const ModalComments = React.forwardRef(({ data, onClose }, ref) => {
   useEffect(() => {
     getMovies();
     chatInputRef.current.focus();
+    window.document.getElementsByTagName('body')[0].classList.add('body-blocker');
+    return () => {
+      window.document.getElementsByTagName('body')[0].classList.remove('body-blocker')
+    };
   }, []);
 
   useEffect(() => {

@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import styled from 'styled-components';
-import { textColors, backgroundColors, lineColor } from '../../constants/defaultStyles';
+import { lineColor } from '../../constants/defaultStyles';
 import {MOVIE_COMMENTS_MODAL} from "../../constants/modals";
 import ModalComments from "../ModalComments/ModalComments";
 
@@ -49,7 +49,6 @@ const MovieRow = ({ movieData }) => {
 
   const onCloseModal = () => {
     setShowModal(false);
-    console.log('CLOSING')
   }
 
   const toHoursAndMinutes = (totalMinutes) => {
@@ -96,7 +95,7 @@ const MovieRow = ({ movieData }) => {
       <div>{title}</div>
       <div>{year}</div>
       <div>{toHoursAndMinutes(runtime)}</div>
-      <div>{revenue ? `$${revenue} M` : 'Unknown'}</div>
+      <div>{revenue ? `$${revenue} M` : '-'}</div>
       <div>{rating}</div>
       <div>{genre.join(', ')}</div>
       {portalElement}

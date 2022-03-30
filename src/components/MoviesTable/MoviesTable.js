@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import _debounce from 'lodash/debounce';
 import fetchUrl from '../../utils/node-fetch';
 import { filterUnique } from '../../utils/functions';
-import { textColors, backgroundColors, lineColor } from '../../constants/defaultStyles';
+import { backgroundColors, lineColor } from '../../constants/defaultStyles';
 import MovieRow from './MovieRow';
 import sadPepe from './sadPepe.png';
 import Button from "../Buttons/Button";
@@ -173,8 +173,8 @@ const NoMovies = styled.div`
     margin: auto;
   }
   > div:last-child {
-    font-size: 1.3em;
-    margin-top: 1em;
+    font-size: 1.3rem;
+    margin: 1rem auto 0 auto;
   }
 `;
 
@@ -191,9 +191,6 @@ const MoviesTable = () => {
   useEffect(() => {
     fetchUrl().then((data) => setMoviesList(data)).catch((err) => setError(err))
   }, []);
-
-  console.log('error', error)
-
 
   useEffect(() => {
     let filteredMovies = null;
@@ -220,9 +217,6 @@ const MoviesTable = () => {
   const handleChange = (event) => {
     debounceFn(event.target.value);
   };
-
-  console.log('searchQuery = ', searchQuery)
-  console.log('moviesToShow.current', moviesToShow.current)
 
   const filterByGenre = (genre) => {
     if (genre === 'All') {

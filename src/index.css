@@ -11,3 +11,8 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.body-blocker {
+  height: 100vh;
+  overflow-y: hidden;
+}
