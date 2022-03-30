@@ -293,7 +293,7 @@ const MoviesTable = () => {
         )}
         {moviesToShow.current?.map((movieData) => (
           <MovieRow
-            key={`${movieData.title}_${movieData.year}_${movieData.director}`}
+            key={movieData.rank}
             movieData={movieData}
           />
         ))}

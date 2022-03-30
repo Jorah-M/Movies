@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import styled from 'styled-components';
 import { textColors, backgroundColors, lineColor } from '../../constants/defaultStyles';
 import {MOVIE_COMMENTS_MODAL} from "../../constants/modals";
-import ModalComments from "../Modal/ModalComments";
+import ModalComments from "../ModalComments/ModalComments";
 
 const MovieContainer = styled.div`
   cursor: pointer;
@@ -49,6 +49,7 @@ const MovieRow = ({ movieData }) => {
 
   const onCloseModal = () => {
     setShowModal(false);
+    console.log('CLOSING')
   }
 
   const toHoursAndMinutes = (totalMinutes) => {
@@ -59,21 +60,23 @@ const MovieRow = ({ movieData }) => {
 
   const getEventType = () => 'ontouchstart' in window ? 'touchstart' : 'click';
 
-  const handleOutsideClick = (e) => {
-    if (modalRef.current.contains(e.target) && e.target.id !== 'arrowBack') {
-      return;
-    }
-    onCloseModal();
-  }
-
   useEffect(() => {
+    const handleOutsideClick = (e) => {
+      if (
+        modalRef.current.contains(e.target)
+        && (e.target.id !== 'arrowBack' && e.target.parentNode.id !== 'arrowBack')
+      ) {
+        return;
+      }
+      onCloseModal();
+    }
     if (isShowModal) {
       document.addEventListener(getEventType(), handleOutsideClick, false);
       return () => {
         document.removeEventListener(getEventType(), handleOutsideClick, false);
       }
     }
-  }, [handleOutsideClick, isShowModal]);
+  }, [isShowModal]);
 
   const modalElement = (
     <>
@@ -93,7 +96,7 @@ const MovieRow = ({ movieData }) => {
       <div>{title}</div>
       <div>{year}</div>
       <div>{toHoursAndMinutes(runtime)}</div>
-      <div>{`$${revenue} M`}</div>
+      <div>{revenue ? `$${revenue} M` : 'Unknown'}</div>
       <div>{rating}</div>
       <div>{genre.join(', ')}</div>
       {portalElement}
