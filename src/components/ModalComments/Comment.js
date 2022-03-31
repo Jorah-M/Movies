@@ -25,16 +25,13 @@ const Comment = styled.div`
   }
 `;
 
-const CommentRow = ({ comment }) => {
-
-  return (
-    <CommentContainer>
-      <Comment>
-        <img src={defaultUserImage} title={'user image'} />
-        <div>{comment}</div>
-      </Comment>
-    </CommentContainer>
-  )
-};
+const CommentRow = ({ comment }) => (
+  <CommentContainer>
+    <Comment>
+      <img src={defaultUserImage} title="user image" />
+      <div>{comment}</div>
+    </Comment>
+  </CommentContainer>
+);
 
 export default CommentRow;

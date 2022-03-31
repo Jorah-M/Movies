@@ -1,10 +1,10 @@
-import {moviesUrl} from '../constants/moviesUrl';
+import { moviesUrl } from '../constants/moviesUrl';
 
-const fetch = require('node-fetch')
+const fetch = require('node-fetch');
 
-const fetchUrl = async function () {
-  return await fetch(moviesUrl, {
-    headers: {Accept: 'application/json'},
+const fetchUrl = function () {
+  return fetch(moviesUrl, {
+    headers: { Accept: 'application/json' },
   }).then((x) => x.json());
 };
 

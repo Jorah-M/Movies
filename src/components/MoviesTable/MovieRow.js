@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import styled from 'styled-components';
 import { lineColor } from '../../constants/defaultStyles';
-import {MOVIE_COMMENTS_MODAL} from "../../constants/modals";
-import ModalComments from "../ModalComments/ModalComments";
+import { MOVIE_COMMENTS_MODAL } from '../../constants/modals';
+import ModalComments from '../ModalComments/ModalComments';
 
 const MovieContainer = styled.div`
   cursor: pointer;
@@ -20,7 +20,7 @@ const MovieContainer = styled.div`
     box-shadow: rgb(220 220 220) 0 2px 15px 0;
     z-index: 2;
   }
-  
+
   > div {
     width: 11.75%;
     padding: 1.5em 0 1.5em 1.5em;
@@ -49,7 +49,7 @@ const MovieRow = ({ movieData }) => {
 
   const onCloseModal = () => {
     setShowModal(false);
-  }
+  };
 
   const toHoursAndMinutes = (totalMinutes) => {
     const minutes = totalMinutes % 60;
@@ -57,7 +57,7 @@ const MovieRow = ({ movieData }) => {
     return `${hours.toString()}h ${minutes.toString()}m`;
   };
 
-  const getEventType = () => 'ontouchstart' in window ? 'touchstart' : 'click';
+  const getEventType = () => ('ontouchstart' in window ? 'touchstart' : 'click');
 
   useEffect(() => {
     const handleOutsideClick = (e) => {
@@ -68,19 +68,20 @@ const MovieRow = ({ movieData }) => {
         return;
       }
       onCloseModal();
-    }
+    };
     if (isShowModal) {
       document.addEventListener(getEventType(), handleOutsideClick, false);
       return () => {
         document.removeEventListener(getEventType(), handleOutsideClick, false);
-      }
+      };
     }
+    return null;
   }, [isShowModal]);
 
   const modalElement = (
     <>
       { isShowModal && (
-        <ModalComments data={movieData} onClose={onCloseModal} ref={modalRef}/>
+        <ModalComments data={movieData} onClose={onCloseModal} ref={modalRef} />
       )}
     </>
   );
@@ -100,7 +101,7 @@ const MovieRow = ({ movieData }) => {
       <div>{genre.join(', ')}</div>
       {portalElement}
     </MovieContainer>
-  )
-}
+  );
+};
 
 export default MovieRow;

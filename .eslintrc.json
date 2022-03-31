@@ -1,0 +1,36 @@
+{
+  "env": {
+    "browser": true,
+    "es6": true
+  },
+  "parser": "@babel/eslint-parser",
+  "parserOptions": {
+    "requireConfigFile": false,
+    "babelOptions": {
+      "presets": ["@babel/preset-react"]
+    }
+  },
+
+  "extends": "airbnb",
+  "rules": {
+    "func-names": ["error", "never"],
+    "react/prop-types": 0,
+    "import/no-named-as-default": 0,
+    "jsx-a11y/alt-text": 0,
+    "react/jsx-filename-extension": 0,
+    "react/no-did-update-set-state": 0,
+    "react/jsx-props-no-spreading": 0,
+    "react/function-component-definition": 0,
+    "jsx-a11y/no-static-element-interactions": 0,
+    "jsx-a11y/click-events-have-key-events": 0,
+    "react/jsx-one-expression-per-line": 0,
+    "react/jsx-no-useless-fragment": 0,
+    "no-param-reassign": [
+      "error",
+      {
+        "props": true,
+        "ignorePropertyModificationsFor": ["accumulator"]
+      }
+    ]
+  }
+}

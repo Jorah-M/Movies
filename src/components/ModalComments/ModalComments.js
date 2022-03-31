@@ -1,11 +1,15 @@
-import React, { useState, useEffect, useRef, forwardRef } from 'react';
+import React, {
+  useState, useEffect, useRef, forwardRef,
+} from 'react';
 import styled from 'styled-components';
-import { textColors, backgroundColors, shadowColorDark, lineColor } from '../../constants/defaultStyles';
+import { v4 as uuidv4 } from 'uuid';
+import {
+  textColors, backgroundColors, shadowColorDark, lineColor,
+} from '../../constants/defaultStyles';
 import arrow from '../../assets/icons/arrow.svg';
 import plane from '../../assets/icons/plane.svg';
 import firebase from '../../utils/firebase';
-import { v4 as uuidv4 } from 'uuid';
-import Comment from "./Comment";
+import Comment from './Comment';
 
 const Container = styled.div`
   text-align: left;
@@ -83,7 +87,7 @@ const Footer = styled.div`
     border-radius: 3px;
     padding: 0 1em;
     width: 100%;
-    
+
     &::-ms-clear, &::-ms-reveal {
       display: none;
       width: 0;
@@ -140,29 +144,27 @@ const EmptyOrError = styled.div`
   user-select: none;
 `;
 
-const ModalComments = React.forwardRef(({ data, onClose }, ref) => {
+const ModalComments = forwardRef(({ data, onClose }, ref) => {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(false);
   const [comment, setComment] = useState('');
   const [error, setError] = useState(false);
   const { title, rank } = data;
-  const firebaseRef = firebase.firestore().collection("movies");
+  const firebaseRef = firebase.firestore().collection('movies');
   const chatInputRef = useRef(null);
   const commentsEndRef = useRef(null);
-  console.log('moviesState', movies);
-  console.log('moviesStorage', movies?.[rank])
 
   const getMovies = () => {
     setLoading(true);
     firebaseRef.onSnapshot((querySnapshot) => {
-      const movies = [];
+      const moviesToSet = [];
       querySnapshot.forEach((doc) => {
-        movies.push(doc.data());
-      })
-      setMovies(movies?.[0]);
+        moviesToSet.push(doc.data());
+      });
+      setMovies(moviesToSet?.[0]);
       setLoading(false);
-    })
-  }
+    });
+  };
 
   /** Using rank as id here (and as a key in map) because it's unique.
    * In real case it's better add unique id for every movie.
@@ -171,21 +173,21 @@ const ModalComments = React.forwardRef(({ data, onClose }, ref) => {
   const addComment = () => {
     if (!comment) return;
     const id = uuidv4();
-    const objectForAdding =
-      movies?.[rank]
-        ? { ...movies, [rank]: [ ...movies?.[rank], { id, comment } ]}
-        :{ ...movies, [rank]: [ { id, comment } ]}
+    const objectForAdding = Array.isArray(movies?.[rank])
+      // eslint-disable-next-line no-unsafe-optional-chaining
+      ? { ...movies, [rank]: [...movies?.[rank], { id, comment }] }
+      : { ...movies, [rank]: [{ id, comment }] };
     firebaseRef
       .doc('moviesList')
       .set(objectForAdding)
       .catch((err) => setError(err));
     setComment('');
-  }
+  };
 
-  const dataToComments = (data) => {
-    const newData = Object.values(data?.[rank]);
+  const dataToComments = (dataForFormatting) => {
+    const newData = Object.values(dataForFormatting?.[rank]);
     return [...newData];
-  }
+  };
 
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
@@ -193,20 +195,20 @@ const ModalComments = React.forwardRef(({ data, onClose }, ref) => {
     } else if (e.key === 'Escape') {
       onClose();
     }
-  }
+  };
 
   useEffect(() => {
     getMovies();
     chatInputRef.current.focus();
     window.document.getElementsByTagName('body')[0].classList.add('body-blocker');
     return () => {
-      window.document.getElementsByTagName('body')[0].classList.remove('body-blocker')
+      window.document.getElementsByTagName('body')[0].classList.remove('body-blocker');
     };
   }, []);
 
   useEffect(() => {
     if (!loading) {
-      commentsEndRef.current.scrollIntoView({ behavior: 'smooth', block: "start" });
+      commentsEndRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }, [loading, movies]);
 
@@ -218,7 +220,7 @@ const ModalComments = React.forwardRef(({ data, onClose }, ref) => {
             id="arrowBack"
             onClick={onClose}
           >
-            <div/>
+            <div />
           </div>
           <div>
             {title}
@@ -226,7 +228,7 @@ const ModalComments = React.forwardRef(({ data, onClose }, ref) => {
         </Header>
         <Body>
           {error && (
-            <EmptyOrError>Oops, an error has occurred!<br/>Please, try again later.</EmptyOrError>
+            <EmptyOrError>Oops, an error has occurred!<br />Please, try again later.</EmptyOrError>
           )}
           {loading && (
             <Loading>
@@ -239,24 +241,23 @@ const ModalComments = React.forwardRef(({ data, onClose }, ref) => {
             && (
               <EmptyOrError>
                 No comments yet.
-                <br/>
+                <br />
                 Be the first one to leave a review!
               </EmptyOrError>
             )}
           {!loading
             && movies?.[rank]
             && dataToComments(movies).map(
-              ({ id, comment }) => (
-                <Comment key={id} comment={comment} />
-              )
-            )
-          }
+              ({ id, comment: content }) => (
+                <Comment key={id} comment={content} />
+              ),
+            )}
           <div ref={commentsEndRef} />
         </Body>
         <Footer>
           <input
             value={comment}
-            placeholder={'Leave your review!'}
+            placeholder="Leave your review!"
             onKeyUp={(e) => handleKeyPress(e)}
             onChange={(e) => setComment(e.target.value)}
             ref={chatInputRef}
@@ -264,7 +265,7 @@ const ModalComments = React.forwardRef(({ data, onClose }, ref) => {
           <div
             onClick={addComment}
           >
-            <div/>
+            <div />
           </div>
         </Footer>
       </Content>

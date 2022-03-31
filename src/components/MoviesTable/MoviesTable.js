@@ -1,13 +1,15 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, {
+  useState, useEffect, useCallback, useRef,
+} from 'react';
 import styled from 'styled-components';
 import _debounce from 'lodash/debounce';
 import fetchUrl from '../../utils/node-fetch';
 import { filterUnique } from '../../utils/functions';
 import { backgroundColors, lineColor } from '../../constants/defaultStyles';
 import MovieRow from './MovieRow';
-import sadPepe from './sadPepe.png';
-import Button from "../Buttons/Button";
-import {MOVIE_COMMENTS_MODAL} from "../../constants/modals";
+import sadPepe from '../../assets/images/sadPepe.png';
+import Button from '../Buttons/Button';
+import { MOVIE_COMMENTS_MODAL } from '../../constants/modals';
 
 const TableContainer = styled.div`
   box-shadow: rgb(226 226 226) 0 0.142rem 0.571rem;
@@ -70,7 +72,7 @@ const TableSearch = styled.div`
       display: none;
     }
   }
-  
+
   > input:focus::placeholder {
     color: transparent;
   }
@@ -122,7 +124,8 @@ const TableError = styled.div`
   margin: 10em;
   > div:first-child {
     font-size: 1.3em;
-    margin-right: 0.5em;
+    margin-left: auto;
+    margin-right: auto;
   }
   > div:last-child {
     margin: 1em auto;
@@ -147,7 +150,7 @@ const TableLoading = styled.div`
     height: 1em;
     animation: spin 1s linear infinite;
   }
-  
+
   @keyframes spin {
     0% {
       transform: rotate(0deg);
@@ -183,31 +186,32 @@ const MoviesTable = () => {
   const [error, setError] = useState(null);
   const [filteredMovies, setFilteredMovies] = useState(null);
   const [chosenGenre, setChosenGenre] = useState(null);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
   const moviesToShow = useRef([]);
 
   moviesToShow.current = filteredMovies || moviesList;
 
   useEffect(() => {
-    fetchUrl().then((data) => setMoviesList(data)).catch((err) => setError(err))
+    fetchUrl().then((data) => setMoviesList(data)).catch((err) => setError(err));
   }, []);
 
   useEffect(() => {
-    let filteredMovies = null;
+    let filteredMoviesList = null;
     if (error) {
       return;
-    } else if (!searchQuery && chosenGenre) {
-      filteredMovies = moviesList
+    }
+    if (!searchQuery && chosenGenre) {
+      filteredMoviesList = moviesList
         .filter((movie) => movie.genre.includes(chosenGenre));
     } else if (searchQuery && !chosenGenre) {
-      filteredMovies = moviesList
+      filteredMoviesList = moviesList
         .filter((movie) => movie.title.toLowerCase().includes(searchQuery.toLowerCase()));
     } else if (searchQuery && chosenGenre) {
-      filteredMovies = moviesList
+      filteredMoviesList = moviesList
         .filter((movie) => movie.genre.includes(chosenGenre))
         .filter((movie) => movie.title.toLowerCase().includes(searchQuery.toLowerCase()));
     }
-    setFilteredMovies(filteredMovies);
+    setFilteredMovies(filteredMoviesList);
   }, [searchQuery, chosenGenre]);
 
   const handleDebounceFn = (value) => {
@@ -224,7 +228,7 @@ const MoviesTable = () => {
       return;
     }
     setChosenGenre(genre);
-  }
+  };
 
   const genres = moviesList?.map((movie) => movie.genre).flat();
   const uniqueGenres = (genres && filterUnique(genres).sort()) || [];
@@ -243,14 +247,14 @@ const MoviesTable = () => {
         <TableSearch>
           <input
             type="search"
-            placeholder={'Filter by title'}
+            placeholder="Filter by title"
             autoComplete="off"
             onChange={handleChange}
           />
         </TableSearch>
         <TableSort>
           <select onChange={(e) => filterByGenre(e.target.value)}>
-            <option key={'All'} value={'All'}>All</option>
+            <option key="All" value="All">All</option>
             {uniqueGenres.map((genre) => (
               <option key={genre} value={genre}>{genre}</option>
             ))}
@@ -263,7 +267,7 @@ const MoviesTable = () => {
             <div>Oups! Something went wrong... Try to refresh the page.</div>
             <div>
               <Button
-                content={'Refresh'}
+                content="Refresh"
                 onClickButton={() => {
                   window.location.reload();
                 }}
@@ -276,16 +280,16 @@ const MoviesTable = () => {
         {!error && moviesToShow.current === null && (
           <TableLoading>
             <div>Loading movies, please wait...</div>
-            <div/>
+            <div />
           </TableLoading>
         )}
-        {moviesToShow.current?.length === 0 && (
+        {!error && moviesToShow.current?.length === 0 && (
           <NoMovies>
             <div />
             <div>No movies found. Try another filters.</div>
           </NoMovies>
         )}
-        {moviesToShow.current?.map((movieData) => (
+        {!error && moviesToShow.current?.map((movieData) => (
           <MovieRow
             key={movieData.rank}
             movieData={movieData}
